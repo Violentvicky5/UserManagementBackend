@@ -81,7 +81,6 @@ const loginUser = async (req, res) => {
   }
 };
 
-//ADMIN LOGIN
 // ADMIN LOGIN
 const loginAdmin = async (req, res) => {
   try {
