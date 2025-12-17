@@ -1,34 +1,25 @@
 const express = require("express");
 const router = express.Router();
-const { registerUser, loginUser } = require("../controllers/authController");
-
-// Import multer
+const { registerUser, loginUser, refreshToken, logoutUser, loginAdmin  } = require("../controllers/authController");
 const multer = require("multer");
 const path = require("path");
 
-// Configure storage
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/"); // folder to save images
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // unique file name
-  },
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
 });
 
-// File filter (optional, only jpg/png)
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-    cb(null, true);
-  } else {
-    cb(new Error("Only JPG and PNG files are allowed"), false);
-  }
+  if (["image/jpeg", "image/png"].includes(file.mimetype)) cb(null, true);
+  else cb(new Error("Only JPG and PNG files are allowed"), false);
 };
 
 const upload = multer({ storage, fileFilter });
 
-// Add multer middleware to register route
 router.post("/register", upload.single("profileImage"), registerUser);
 router.post("/login", loginUser);
+router.get("/refresh-token", refreshToken);
+router.post("/logout", logoutUser);
+router.post("/admin/login", loginAdmin);
 
 module.exports = router;
