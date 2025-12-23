@@ -48,7 +48,7 @@ const loginUser = async (req, res) => {
     const { identifier, password } = req.body;
     if (!identifier || !password) return res.status(400).json({ message: "Email/Phone and password required" });
 
-    const user = await User.findOne({ $or: [{ email: identifier }, { phone: identifier }] });
+    const user = await User.findOne({ $or: [{ email: identifier }, { phone: identifier }], role: "user" });
     if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.password);
